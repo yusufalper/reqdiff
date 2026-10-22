@@ -7,3 +7,4 @@ reqdiff.local.json
 coverage.out
 __pycache__/
 *.pyc
+/plan.md

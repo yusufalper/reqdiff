@@ -37,7 +37,7 @@ go test ./internal/jsondoc -run '^$' -fuzz FuzzDecode -fuzztime 10s
 strict JSON, `compare` produces differences, and `report` renders output.
 `cmd/reqdiff` only wires signals, streams, and the process exit code.
 
-The current product design is recorded in [plan.md](plan.md). Check the public
+Check the public
 [reference](docs/reference.md) before changing defaults, exit codes, or the JSON
 schema. Keep documentation and tests in the same change as behavior updates.
 
