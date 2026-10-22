@@ -16,6 +16,7 @@ jobs:
       - run: go test -race ./...
       - run: go vet ./...
       - run: ./scripts/build-release.sh "$GITHUB_REF_NAME"
+      - run: python3 scripts/check-release.py
       - name: Publish archives
         env:
           GH_TOKEN: ${{ github.token }}
