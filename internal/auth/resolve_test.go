@@ -1,8 +1,8 @@
 package auth
 
 import (
+	"github.com/yusufalper/reqdiff/internal/config"
 	"net/http"
-	"reqdiff/internal/config"
 	"strings"
 	"testing"
 )

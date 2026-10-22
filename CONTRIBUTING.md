@@ -51,10 +51,12 @@ requires Pillow (development-only) and captures a real comparison against the
 local synthetic server. It writes `docs/assets/demo.gif`; its runtime dependency
 is not part of reqdiff. Never use real customer output in screenshots.
 
-## Before the first public release
+## Releases
 
-Choose the GitHub repository URL, update the module path and internal imports
-from `reqdiff` together if publishing a `go install` address, and verify the name
-is suitable for your project. No repository URL or registry namespace is assumed
-in this checkout. The code is licensed under MIT; confirm that choice before
-publishing. Tagging `v0.1.0` after pushing the repository runs the release workflow.
+The module path is `github.com/yusufalper/reqdiff`. Run the checks above before
+creating a release tag. `make release VERSION=v0.1.0` builds all six platform
+archives locally; `python3 scripts/check-release.py` verifies checksums and exact
+archive contents. Publishing a `v*` tag runs the GitHub release workflow.
+
+Version-specific release notes live in `docs/releases/`. If no notes file exists
+for a tag, the workflow asks GitHub to generate release notes from the commits.

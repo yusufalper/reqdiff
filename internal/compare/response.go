@@ -2,11 +2,11 @@ package compare
 
 import (
 	"errors"
+	"github.com/yusufalper/reqdiff/internal/config"
+	"github.com/yusufalper/reqdiff/internal/httpfetch"
+	"github.com/yusufalper/reqdiff/internal/jsondoc"
+	"github.com/yusufalper/reqdiff/internal/report"
 	"net/url"
-	"reqdiff/internal/config"
-	"reqdiff/internal/httpfetch"
-	"reqdiff/internal/jsondoc"
-	"reqdiff/internal/report"
 	"sort"
 )
 

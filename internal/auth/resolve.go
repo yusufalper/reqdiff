@@ -4,8 +4,8 @@ package auth
 import (
 	"errors"
 	"fmt"
+	"github.com/yusufalper/reqdiff/internal/config"
 	"net/http"
-	"reqdiff/internal/config"
 	"sort"
 	"strings"
 )

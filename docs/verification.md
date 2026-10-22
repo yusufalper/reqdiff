@@ -46,7 +46,7 @@ when creating tar archives.
 - Work stayed in the requested fresh directory on `feat/mvp`; there was no existing branch or user code to isolate in another worktree.
 - Go was absent and was installed so real checks could run. Docker support was then added at the user's request; local Go is not required to build or test through Docker.
 - Strict JSON resource checks were implemented together with the first decoder task rather than duplicating parsing in a later task. Their test and fuzz coverage remains separate.
-- The module is currently `reqdiff`. A remote `go install` address is intentionally not advertised before the actual repository owner/URL is chosen. Changing that later requires a coordinated module/import rename.
-- MIT is the proposed public license. Choose another license before publication if needed.
-- No remote was configured, no repository was made public, and no tag or release was published. GitHub workflow execution and repository/name ownership remain publication-time checks; local equivalents of build, test, and packaging were run.
+- The initial local module was `reqdiff`; publication preparation changed it and all internal imports to `github.com/yusufalper/reqdiff`.
+- The public distribution uses the MIT license.
+- At the original local handoff there was no remote or release. The user subsequently created `yusufalper/reqdiff` and authorized publishing the code and first release. The checks above describe local verification; hosted workflow results are available in the repository Actions tab.
 - No review findings were left deferred.

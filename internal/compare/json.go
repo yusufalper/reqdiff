@@ -2,8 +2,8 @@ package compare
 
 import (
 	"encoding/json"
+	"github.com/yusufalper/reqdiff/internal/report"
 	"math/big"
-	"reqdiff/internal/report"
 	"sort"
 	"strconv"
 )

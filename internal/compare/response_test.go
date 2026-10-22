@@ -1,9 +1,9 @@
 package compare
 
 import (
+	"github.com/yusufalper/reqdiff/internal/config"
+	"github.com/yusufalper/reqdiff/internal/httpfetch"
 	"net/http"
-	"reqdiff/internal/config"
-	"reqdiff/internal/httpfetch"
 	"testing"
 	"time"
 )

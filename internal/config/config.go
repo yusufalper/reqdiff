@@ -5,11 +5,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/yusufalper/reqdiff/internal/jsondoc"
 	"io"
 	"net/http"
 	"net/url"
 	"os"
-	"reqdiff/internal/jsondoc"
 	"strings"
 	"time"
 )

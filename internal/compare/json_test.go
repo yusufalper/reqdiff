@@ -1,7 +1,7 @@
 package compare
 
 import (
-	"reqdiff/internal/jsondoc"
+	"github.com/yusufalper/reqdiff/internal/jsondoc"
 	"testing"
 )
 

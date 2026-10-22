@@ -1,5 +1,8 @@
 # reqdiff
 
+[![CI](https://github.com/yusufalper/reqdiff/actions/workflows/ci.yml/badge.svg)](https://github.com/yusufalper/reqdiff/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/yusufalper/reqdiff)](https://github.com/yusufalper/reqdiff/releases/latest)
+
 **Your API changed. Find out what actually changed.**
 
 Compare live API responses across environments in one command. See added fields,
@@ -42,7 +45,20 @@ that two endpoints actually return. These checks answer different questions.
 
 ## Quick start
 
-From a checkout of this repository, choose Docker or Go.
+Download a binary for your OS and CPU from the [latest release](https://github.com/yusufalper/reqdiff/releases/latest), extract it, and put `reqdiff` on your PATH. Each release includes SHA-256 checksums.
+
+Or install with Go:
+
+```sh
+go install github.com/yusufalper/reqdiff/cmd/reqdiff@v0.1.0
+```
+
+To build with Docker or from source, start with a checkout:
+
+```sh
+git clone https://github.com/yusufalper/reqdiff.git
+cd reqdiff
+```
 
 ### Docker — no local Go installation
 
@@ -253,6 +269,6 @@ and [docs/reference.md](docs/reference.md) for the full CLI and output contract.
 
 `make release VERSION=v0.1.0` produces Linux, macOS, and Windows archives for
 amd64 and arm64, plus SHA-256 checksums in `dist/`. A tag matching `v*` triggers
-the included GitHub release workflow once this repository is published.
+the included GitHub release workflow.
 
 Licensed under [MIT](LICENSE).

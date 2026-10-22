@@ -3,10 +3,10 @@ package httpfetch
 import (
 	"context"
 	"errors"
+	"github.com/yusufalper/reqdiff/internal/auth"
 	"io"
 	"net"
 	"net/http"
-	"reqdiff/internal/auth"
 	"time"
 )
 

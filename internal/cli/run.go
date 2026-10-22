@@ -4,11 +4,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/yusufalper/reqdiff/internal/auth"
+	"github.com/yusufalper/reqdiff/internal/compare"
+	"github.com/yusufalper/reqdiff/internal/httpfetch"
+	"github.com/yusufalper/reqdiff/internal/report"
 	"io"
-	"reqdiff/internal/auth"
-	"reqdiff/internal/compare"
-	"reqdiff/internal/httpfetch"
-	"reqdiff/internal/report"
 	"strings"
 )
 

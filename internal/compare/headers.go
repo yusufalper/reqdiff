@@ -3,10 +3,10 @@ package compare
 import (
 	"encoding/json"
 	"errors"
+	"github.com/yusufalper/reqdiff/internal/report"
 	"mime"
 	"net/http"
 	"reflect"
-	"reqdiff/internal/report"
 	"sort"
 	"strings"
 )

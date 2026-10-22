@@ -3,9 +3,9 @@ package cli
 import (
 	"errors"
 	"flag"
+	"github.com/yusufalper/reqdiff/internal/config"
 	"io"
 	"net/http"
-	"reqdiff/internal/config"
 	"strings"
 	"time"
 )

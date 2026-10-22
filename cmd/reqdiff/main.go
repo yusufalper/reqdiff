@@ -2,9 +2,9 @@ package main
 
 import (
 	"context"
+	"github.com/yusufalper/reqdiff/internal/cli"
 	"os"
 	"os/signal"
-	"reqdiff/internal/cli"
 	"syscall"
 )
 
