@@ -1,0 +1,11 @@
+Left:  http://127.0.0.1:63887/staging/users
+Right: http://127.0.0.1:63887/production/users
+Status: 200 → 200
+Latency: 64ms → 163ms (+99ms)
+
+JSON differences:
++ /user/avatar: string
+~ /user/id: number → string
+- /user/username: string
+
+Result: different
