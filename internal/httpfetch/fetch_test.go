@@ -3,6 +3,7 @@ package httpfetch
 import (
 	"compress/gzip"
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -88,5 +89,55 @@ func TestTLSVerification(t *testing.T) {
 	_, err := Fetch(context.Background(), c, auth.ResolvedEndpoint{URL: s.URL}, 1024)
 	if err == nil || strings.Contains(err.Error(), s.URL) {
 		t.Fatal("expected safe TLS error")
+	}
+}
+
+func TestFetchMeasuresBodyRead(t *testing.T) {
+	sent, release := make(chan struct{}), make(chan struct{})
+	s := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(200)
+		w.(http.Flusher).Flush()
+		close(sent)
+		<-release
+		fmt.Fprint(w, "{}")
+	}))
+	defer s.Close()
+	c := NewClient(time.Second)
+	defer c.CloseIdleConnections()
+	type result struct {
+		s   Snapshot
+		err error
+	}
+	done := make(chan result, 1)
+	go func() {
+		s, err := Fetch(context.Background(), c, auth.ResolvedEndpoint{URL: s.URL}, 1024)
+		done <- result{s, err}
+	}()
+	<-sent
+	// Fetch must still be blocked after headers; the body is part of the measured request.
+	select {
+	case <-done:
+		t.Fatal("returned before reading body")
+	default:
+	}
+	close(release)
+	r := <-done
+	if r.err != nil || string(r.s.Body) != "{}" || r.s.Duration <= 0 {
+		t.Fatalf("%+v %v", r.s, r.err)
+	}
+}
+func TestTimeoutDuringBodyRead(t *testing.T) {
+	s := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(200)
+		w.(http.Flusher).Flush()
+		<-r.Context().Done()
+	}))
+	defer s.Close()
+	c := NewClient(20 * time.Millisecond)
+	defer c.CloseIdleConnections()
+	snapshot, err := Fetch(context.Background(), c, auth.ResolvedEndpoint{URL: s.URL}, 1024)
+	var e *Error
+	if !errors.As(err, &e) || e.Code != "timeout" || snapshot.Status != 200 {
+		t.Fatalf("%+v %v", snapshot, err)
 	}
 }
