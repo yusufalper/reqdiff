@@ -1,0 +1,7 @@
+/reqdiff
+/dist/
+.env
+.env.*
+reqdiff.local.json
+.superpowers/
+coverage.out
