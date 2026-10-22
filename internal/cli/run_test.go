@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"strings"
 	"sync/atomic"
 	"testing"
@@ -129,5 +130,72 @@ func TestHelpAndVersion(t *testing.T) {
 		if Run(context.Background(), []string{arg}, &b, &b, noEnv) != 0 || b.Len() == 0 {
 			t.Fatal(arg)
 		}
+	}
+}
+
+func TestRunRedactsEncodedCredentials(t *testing.T) {
+	for _, secret := range []string{"abc/def~xyz", `a"b\c<d>`} {
+		t.Run(secret, func(t *testing.T) {
+			left := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.Header().Set("X-Echo", secret)
+				json.NewEncoder(w).Encode(map[string]any{secret: true})
+			}))
+			defer left.Close()
+			right := server(t, "{}")
+			for _, format := range []string{"json", "text"} {
+				var out, errout bytes.Buffer
+				args := []string{left.URL + "/" + url.PathEscape(secret), right.URL, "--left-header-env", "X-Key=KEY", "--right-header-env", "X-Key=KEY", "--compare-header", "X-Echo", "--format", format}
+				code := Run(context.Background(), args, &out, &errout, func(string) (string, bool) { return secret, true })
+				if code != 1 {
+					t.Fatalf("exit %d: %s %s", code, out.String(), errout.String())
+				}
+				// Decode each display encoding independently: reversible escaping is not redaction.
+				if format == "json" {
+					var result struct {
+						Left        struct{ URL string }
+						Differences []struct {
+							Scope, Path string
+							LeftValue   *string `json:"left_value"`
+						}
+					}
+					if err := json.Unmarshal(out.Bytes(), &result); err != nil {
+						t.Fatal(err)
+					}
+					decodedURL, _ := url.PathUnescape(result.Left.URL)
+					if strings.Contains(decodedURL, secret) {
+						t.Error("credential in URL path")
+					}
+					for _, d := range result.Differences {
+						path := strings.ReplaceAll(strings.ReplaceAll(d.Path, "~1", "/"), "~0", "~")
+						if strings.Contains(path, secret) {
+							t.Error("credential in JSON Pointer")
+						}
+						if d.Scope == "header" && d.LeftValue != nil {
+							var values []string
+							if err := json.Unmarshal([]byte(*d.LeftValue), &values); err != nil {
+								t.Fatal(err)
+							}
+							for _, v := range values {
+								if strings.Contains(v, secret) {
+									t.Error("credential in encoded header")
+								}
+							}
+						}
+					}
+				} else {
+					if !strings.Contains(out.String(), "[REDACTED]") {
+						t.Error("text report missing redaction")
+					}
+					pointerEncoded := strings.ReplaceAll(strings.ReplaceAll(secret, "~", "~0"), "/", "~1")
+					headerEncoded, _ := json.Marshal([]string{secret})
+					headerDisplay, _ := json.Marshal(string(headerEncoded))
+					for _, encoded := range []string{pointerEncoded, url.PathEscape(secret), string(headerDisplay)} {
+						if strings.Contains(out.String(), encoded) {
+							t.Errorf("recoverable credential in text: %s", encoded)
+						}
+					}
+				}
+			}
+		})
 	}
 }
