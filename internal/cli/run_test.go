@@ -85,7 +85,8 @@ func TestRunPartialFailureAndCancellation(t *testing.T) {
 	slow := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { <-r.Context().Done() }))
 	defer slow.Close()
 	var out, errout bytes.Buffer
-	code := Run(context.Background(), []string{good.URL, slow.URL, "--timeout", "30ms", "--format=json"}, &out, &errout, noEnv)
+	// Leave enough time for the healthy endpoint on busy CI and Docker hosts.
+	code := Run(context.Background(), []string{good.URL, slow.URL, "--timeout", "1s", "--format=json"}, &out, &errout, noEnv)
 	var r struct {
 		Left   struct{ Status *int }
 		Errors []struct{ Side, Code string }
