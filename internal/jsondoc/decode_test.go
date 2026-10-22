@@ -33,3 +33,23 @@ func TestDecodeLimits(t *testing.T) {
 		}
 	}
 }
+
+func FuzzDecode(f *testing.F) {
+	for _, s := range []string{`null`, `{"a":[1,true,null]}`, `{"a":1,"a":2}`, `[`, strings.Repeat("[", 130)} {
+		f.Add(s)
+	}
+	f.Fuzz(func(t *testing.T, s string) {
+		if len(s) > 65536 {
+			t.Skip()
+		}
+		value, err := Decode([]byte(s), 128)
+		if err == nil {
+			if !json.Valid([]byte(s)) {
+				t.Fatal("accepted invalid JSON")
+			}
+			if _, err := json.Marshal(value); err != nil {
+				t.Fatal(err)
+			}
+		}
+	})
+}
