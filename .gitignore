@@ -5,3 +5,5 @@
 reqdiff.local.json
 .superpowers/
 coverage.out
+__pycache__/
+*.pyc

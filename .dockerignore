@@ -1,0 +1,8 @@
+.git
+.superpowers
+.env
+.env.*
+reqdiff.local.json
+reqdiff
+dist
+coverage.out

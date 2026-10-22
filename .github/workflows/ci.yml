@@ -1,0 +1,33 @@
+name: CI
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: false
+      - run: go test ./...
+      - run: go vet ./...
+      - run: go build ./cmd/reqdiff
+      - if: runner.os != 'Windows'
+        run: test -z "$(gofmt -l cmd internal)"
+      - if: runner.os == 'Linux'
+        run: go test -race ./...
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build --target test -t reqdiff:test .
+      - run: docker build -t reqdiff:local .
+      - run: docker run --rm reqdiff:local --help
